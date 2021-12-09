@@ -29,6 +29,7 @@ class UserController extends Controller
             $request->validated();
             //create a link to varify email.       
             $verification_token = (new createToken)->createToken($request->email);
+            dd($verification_token);
             $url = "http://127.0.0.1:8000/api/emailVerify/" . $verification_token . '/' . $request->email;
 
             if ($image = $request->file('profile_pic')) {
