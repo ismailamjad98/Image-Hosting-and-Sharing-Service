@@ -28,7 +28,7 @@ class UserController extends Controller
             // Validate the user inputs
             $request->validated();
             //create a link to varify email.
-            dd('da');       
+            // dd('da');       
             $verification_token = (new \App\Services\createToken)->createToken($request->email);
             // dd($verification_token);
             $url = "http://127.0.0.1:8000/api/emailVerify/" . $verification_token . '/' . $request->email;
