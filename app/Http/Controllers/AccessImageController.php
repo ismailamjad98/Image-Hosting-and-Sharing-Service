@@ -21,6 +21,9 @@ class AccessImageController extends Controller
         $imageLink = UploadImage::where('link', $request->link)->first();
         $user = User::where('id', $userID)->first();
         $allUsers = User::where('email',$request->access_to)->first();
+        if($imageLink == null){
+            return ['Message' => 'This Link Doesnot Exists'];
+        }
         if ($user->email == $request->access_to) {
             return ['Message' => 'you cannot give permission to yourself', 'link' => $imageLink->link];
         }
