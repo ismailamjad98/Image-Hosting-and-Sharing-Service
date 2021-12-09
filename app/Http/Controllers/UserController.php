@@ -26,10 +26,10 @@ class UserController extends Controller
         try {
             // Validate the user inputs
             $request->validated();
-            
+
             //create a link to varify email.      
-            $verification_token = (new createToken)->createToken($request->email);
-            $url = "http://127.0.0.1:8000/api/emailVerify/" . $verification_token . '/' . $request->email;
+            // $verification_token = (new createToken)->createToken($request->email);
+            // $url = "http://127.0.0.1:8000/api/emailVerify/" . $verification_token . '/' . $request->email;
 
             if ($image = $request->file('profile_pic')) {
                 //make a path to store image
