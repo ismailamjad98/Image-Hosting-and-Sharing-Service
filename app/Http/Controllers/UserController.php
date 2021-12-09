@@ -47,6 +47,7 @@ class UserController extends Controller
 
     public function register(RegisterUserRequest $request)
     {
+        dd('ds');
         try {
             // Validate the user inputs
             $request->validated();
