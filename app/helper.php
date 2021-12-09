@@ -11,6 +11,7 @@ function DecodeUser(Request $request)
     if(!$getToken){
         return $userID = null;
     }
+    dd($getToken);
     // $key = config('constant.key');
     $decoded = JWT::decode($getToken, new Key('SocialCamp', "HS256"));
     $userID = $decoded->id;
