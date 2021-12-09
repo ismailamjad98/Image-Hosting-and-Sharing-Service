@@ -14,6 +14,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Credentials: true');
+header('Access-Control-Allow-Headers: *');
+header('Access-Control-Allow-Method: *');
 //User Routes
 Route::post('/register', [UserController::class, 'register']);
 Route::post('/login', [UserController::class, 'login']);
