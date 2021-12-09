@@ -32,6 +32,7 @@ class Check_Token_Middleware
 
         // if token is invalid
         $check = Token::where('token' , $getToken)->first();
+
         if($check->token != $getToken){
             return response([
                 "message" => "Invalid Token"
