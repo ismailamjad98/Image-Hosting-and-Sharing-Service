@@ -18,7 +18,7 @@ class ResetPasswordController extends Controller
     //creating a token 
     function createToken($data)
     {
-        $key = "SocialCamp";
+        // $key = "SocialCamp";
         $payload = array(
             "iss" => "http://127.0.0.1:8000",
             "aud" => "http://127.0.0.1:8000/api",
@@ -28,7 +28,7 @@ class ResetPasswordController extends Controller
             'token_type' => 'bearer'
         );
 
-        $token = JWT::encode($payload, $key, 'HS256');
+        $token = JWT::encode($payload, 'SocialCamp', 'HS256');
 
         return $token;
     }
