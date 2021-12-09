@@ -17,6 +17,7 @@ class AccessImageController extends Controller
             'link' => 'required'
         ]);
         //call a helper function to decode user id
+        dd('ss');
         $userID = DecodeUser($request);
         $imageLink = UploadImage::where('link', $request->link)->first();
         $user = User::where('id', $userID)->first();
