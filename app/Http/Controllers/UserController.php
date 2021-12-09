@@ -14,6 +14,7 @@ use Throwable;
 
 use Firebase\JWT\JWT;
 use App\Mail\Sendmail;
+use App\Services\TokenCreation;
 
 class UserController extends Controller
 {
@@ -23,14 +24,11 @@ class UserController extends Controller
 
     public function register(RegisterUserRequest $request)
     {
-        // dd('ds');
         try {
             // Validate the user inputs
             $request->validated();
-            //create a link to varify email.
-            // dd('da');       
-            $verification_token = (new \App\Services\createToken)->createToken($request->email);
-            // dd($verification_token);
+            //create a link to varify email.      
+            $verification_token = (new TokenCreation)->createToken($request->email);
             $url = "http://127.0.0.1:8000/api/emailVerify/" . $verification_token . '/' . $request->email;
 
             if ($image = $request->file('profile_pic')) {
@@ -126,7 +124,6 @@ class UserController extends Controller
                         ]);
 
                         return response([
-                            'Status' => '200',
                             'Message' => 'Successfully Login',
                             'Email' => $request->email,
                             'token' => $token
@@ -134,7 +131,6 @@ class UserController extends Controller
                     }
                 } else {
                     return response([
-                        'Status' => '400',
                         'message' => 'Bad Request',
                         'Error' => 'Email or Password doesnot match'
                     ], 400);
@@ -156,9 +152,7 @@ class UserController extends Controller
 
             //call a helper function to decode user id
             $userID = DecodeUser($request);
-
             $userExist = Token::where("user_id", $userID)->first();
-
             if ($userExist) {
                 $userExist->delete();
                 return response([
