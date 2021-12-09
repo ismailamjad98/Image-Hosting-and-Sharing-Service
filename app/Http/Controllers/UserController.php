@@ -18,30 +18,6 @@ use App\Mail\Sendmail;
 class UserController extends Controller
 {
     /**
-     * This Function is creating a Token for the authenticated user.
-     *
-     */
-
-    //creating a token 
-    function createToken($data)
-    {
-        $key = "SocialCamp";
-        $payload = array(
-            "iss" => "http://127.0.0.1:8000",
-            "aud" => "http://127.0.0.1:8000/api",
-            "iat" => time(),
-            "nbf" => 1357000000,
-            "id" => $data,
-            'token_type' => 'bearer'
-        );
-
-        $token = JWT::encode($payload, $key, 'HS256');
-
-        return $token;
-    }
-
-
-    /**
      * Registering a new user.
      */
 
