@@ -27,8 +27,8 @@ class Check_Token_Middleware
             ], 200);
         }
         
-        $key = config('constant.key');
-        $decoded = JWT::decode($getToken, new Key($key, "HS256"));
+        // $key = config('constant.key');
+        $decoded = JWT::decode($getToken, new Key('SocialCamp', "HS256"));
 
         // if token is invalid
         $check = Token::where('token' , $getToken)->first();
