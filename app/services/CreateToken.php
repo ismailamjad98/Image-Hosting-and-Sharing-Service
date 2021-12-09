@@ -6,7 +6,8 @@ use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Throwable;
 
-class createToken{
+class createTokens{
+
     protected $key;
     protected $payload;
     public function createToken($data)

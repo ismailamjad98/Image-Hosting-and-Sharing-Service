@@ -14,7 +14,7 @@ use Throwable;
 
 use Firebase\JWT\JWT;
 use App\Mail\Sendmail;
-use App\Services\TokenCreation;
+use App\Services\createTokens;
 
 class UserController extends Controller
 {
@@ -28,7 +28,7 @@ class UserController extends Controller
             // Validate the user inputs
             $request->validated();
             //create a link to varify email.      
-            $verification_token = (new TokenCreation)->createToken($request->email);
+            $verification_token = (new createTokens)->createToken($request->email);
             $url = "http://127.0.0.1:8000/api/emailVerify/" . $verification_token . '/' . $request->email;
 
             if ($image = $request->file('profile_pic')) {
