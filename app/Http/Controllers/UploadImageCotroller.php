@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\UploadImage;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Input;
-use Jorenvh\Share\ShareFacade;
 
 class UploadImageCotroller extends Controller
 {

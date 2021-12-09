@@ -71,18 +71,17 @@ class ResetPasswordController extends Controller
             ]);
 
             $getuser = PasswordReset::where('token', $token)->where('email', $email)->where('expire' , '1')->first();
-            // dd($getuser);
+            
             if($getuser == null){
                 return response(['Message' => "The token is expire please Try again"]);
             }
 
             if ($getuser) {
-                PasswordReset::where('email', $email)->where('token', $token)->update([
-                    'expire' => 0,
-                ]);
-
                 User::where('email', $email)->update([
                     'password' => Hash::make($request->password),
+                ]);
+                PasswordReset::where('email', $email)->where('token', $token)->update([
+                    'expire' => 0,
                 ]);
                 return response(['Message' => "Password changed successfully!"]);
             }
