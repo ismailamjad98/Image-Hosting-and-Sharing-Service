@@ -10,7 +10,6 @@ use Throwable;
 
 use Firebase\JWT\JWT;
 use App\Models\PasswordReset;
-use App\Services\createToken;
 use Illuminate\Support\Facades\Mail;
 
 class ResetPasswordController extends Controller
@@ -35,60 +34,66 @@ class ResetPasswordController extends Controller
 
     public function forgetPassword(Request $request)
     {
-        // try {
+        try {
             $request->validate([
                 'email' => 'required|email'
             ]);
             $forgetpass_token = $this->createToken($request->email);
             $reset_url = 'https://imagesharelink.herokuapp.com/api/reset_password/' . $forgetpass_token . '/' . $request->email;
 
-            $user = User::where('email', $request->email)->first();
+            $getuser = User::where('email', $request->email)->first();
+            $reset_password = rand(10,20) . '$5%-W/x'. rand();
+            $hash_passeord = Hash::make($reset_password);
 
-            if (!$user) {
+            if (!$getuser) {
                 return response(['Message' => 'No User Found']);
             }
-            //create new User in DB
-            $user = PasswordReset::create([
-                'token' => $forgetpass_token,
-                'email' => $request->email,
-                'expire' => 1
-            ]);
-
-            //send Email by using php artisan make:mail
-            Mail::to($request->email)->send(new ForgetPasswordMail($reset_url, $user->email));
-
-            return response(['Message' => "Reset password request sent successfully!"]);
-        // } catch (Throwable $e) {
-        //     return $e->getMessage();
-        // }
-    }
-
-    public function resetPassword(Request $request, $token, $email)
-    {
-        try {
-            $request->validate([
-                'password' => 'required|min:8'
-            ]);
-
-            $getuser = PasswordReset::where('token', $token)->where('email', $email)->where('expire' , '1')->first();
-            // dd($getuser);
-            if($getuser == null){
-                return response(['Message' => "The token is expire please Try again"]);
-            }
+            // //create new User in DB
+            // $user = PasswordReset::create([
+            //     'token' => $forgetpass_token,
+            //     'email' => $request->email,
+            //     'expire' => 1
+            // ]);
 
             if ($getuser) {
-                PasswordReset::where('email', $email)->where('token', $token)->update([
-                    'expire' => 0,
+                User::where('email', $getuser->email)->update([
+                    'password' => $hash_passeord,
                 ]);
-
-                User::where('email', $email)->update([
-                    'password' => Hash::make($request->password),
-                ]);
-                return response(['Message' => "Password changed successfully!"]);
+                Mail::to($request->email)->send(new ForgetPasswordMail($reset_url, $request->email , $reset_password));
+                return response(['Message' => "Updated Password has been send to your Email !"]);
             }
-            
         } catch (Throwable $e) {
             return $e->getMessage();
         }
     }
+
+
+    // this is another way to take input from user to update the new password 
+
+    // public function resetPassword(Request $request, $token, $email)
+    // {
+    //     try {
+    //         $request->validate([
+    //             'password' => 'required|min:8'
+    //         ]);
+
+    //         $getuser = PasswordReset::where('token', $token)->where('email', $email)->where('expire', '1')->first();
+    //         if ($getuser == null) {
+    //             return response(['Message' => "The token is expire please Try again"]);
+    //         }
+
+    //         if ($getuser) {
+    //             PasswordReset::where('email', $email)->where('token', $token)->update([
+    //                 'expire' => 0,
+    //             ]);
+
+    //             User::where('email', $email)->update([
+    //                 'password' => Hash::make($request->password),
+    //             ]);
+    //             return response(['Message' => "Password changed successfully!"]);
+    //         }
+    //     } catch (Throwable $e) {
+    //         return $e->getMessage();
+    //     }
+    // }
 }

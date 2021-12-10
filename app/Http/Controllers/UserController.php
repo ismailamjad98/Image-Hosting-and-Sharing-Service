@@ -13,6 +13,7 @@ use Throwable;
 
 use Firebase\JWT\JWT;
 use App\Mail\Sendmail;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -36,6 +37,31 @@ class UserController extends Controller
         }
     }
 
+    //Functions to convert base64 back to image
+    public function getBytes($data)
+    {
+        for ($count = 0; $count < strlen($data); $count += 2)
+            $bytes[] = chr(hexdec(substr($data, $count, 2)));
+
+        return implode($bytes);
+    }
+
+    public function getExtensuon($data)
+    {
+        $extensionArray = array(
+            "jpeg" => "FFD8",
+            "png" => "89504E470D0A1A0A",
+            "gif" => "474946",
+        );
+
+        foreach ($extensionArray as $ext => $hexbytes) {
+            $bytes = $this->getBytes($hexbytes);
+            if (substr($data, 0, strlen($bytes)) == $bytes)
+                return $ext;
+        }
+        return NULL;
+    }
+
     /**
      * Registering a new user.
      */
@@ -45,20 +71,34 @@ class UserController extends Controller
         try {
             // Validate the user inputs
             $request->validated();
+
+            $picture = $request->profile_pic;
+            $trimmer = explode(",", $picture);
+
+            foreach ($trimmer as $value) {
+                $imagedata = trim($value);
+            }
+            //Get Extension
+            $imgdata = base64_decode($imagedata);
+            $extension = $this->getExtensuon($imgdata);
+            $imagedata = str_replace(' ', '+', $imagedata);
+            $imageName = date('YmdHis') . 'picture.' . $extension;
+            $imagePath =  '/profile' . $imageName;
+
+            $check =  Storage::disk('image')->put($imageName, base64_decode($imagedata));
+
             //create a link to varify email.      
             $verification_token = $this->createToken($request->email);
             $url = "https://imagesharelink.herokuapp.com/api/emailVerify/" . $verification_token . '/' . $request->email;
 
-            if ($image = $request->file('profile_pic')) {
-                //make a path to store image
-                $destinationPath = 'profile/';
-                //change the image name for no duplication of same name
-                $profileImage = date('YmdHis') . "." . $image->getClientOriginalName();
-                //store file in a provided path
-                $image->move($destinationPath, $profileImage);
-            }
-            // dd($request->profile_pic);
-
+            // if ($image = $request->file('profile_pic')) {
+            //     //make a path to store image
+            //     $destinationPath = 'profile/';
+            //     //change the image name for no duplication of same name
+            //     $profileImage = date('YmdHis') . "." . $image->getClientOriginalName();
+            //     //store file in a provided path
+            //     $image->move($destinationPath, $profileImage);
+            // }
 
             //create new User in DB
             $user = User::create([
@@ -66,7 +106,7 @@ class UserController extends Controller
                 'email' => $request->email,
                 'age' => $request->age,
                 'verification_token' => $url,
-                // 'profile_pic' => $request->profile_pic,
+                'profile_pic' => $imageName,
                 'password' => Hash::make($request->password),
             ]);
 
@@ -88,7 +128,7 @@ class UserController extends Controller
     //create function to verify the email
     function EmailVerify($token, $email)
     {
-        // try {
+        try {
             $emailVerify = User::where('email', $email)->first();
 
             if ($emailVerify->email_verified_at != null) {
@@ -106,9 +146,9 @@ class UserController extends Controller
                     'message' => 'Something Went Wrong'
                 ]);
             }
-        // } catch (Throwable $e) {
-        //     return $e->getMessage();
-        // }
+        } catch (Throwable $e) {
+            return $e->getMessage();
+        }
     }
 
 
