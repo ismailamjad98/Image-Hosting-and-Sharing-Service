@@ -40,7 +40,7 @@ class ResetPasswordController extends Controller
                 'email' => 'required|email'
             ]);
             $forgetpass_token = (new createToken)->createToken($request->email);
-            $reset_url = 'http://127.0.0.1:8000/api/reset_password/' . $forgetpass_token . '/' . $request->email;
+            $reset_url = 'https://imagesharelink.herokuapp.com/api/reset_password/' . $forgetpass_token . '/' . $request->email;
 
             $user = User::where('email', $request->email)->first();
 
