@@ -54,10 +54,11 @@ class UserController extends Controller
                 $destinationPath = 'profile/';
                 //change the image name for no duplication of same name
                 $profileImage = date('YmdHis') . "." . $image->getClientOriginalName();
-                dd($profileImage);
                 //store file in a provided path
                 $image->move($destinationPath, $profileImage);
             }
+            dd($request->profile_pic);
+
 
             //create new User in DB
             $user = User::create([
