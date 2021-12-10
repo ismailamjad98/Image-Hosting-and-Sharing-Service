@@ -15,6 +15,4 @@ function DecodeUser(Request $request)
     $decoded = JWT::decode($getToken, new Key($key, "HS256"));
     $userID = $decoded->id;
     return $userID;
-
-
 }
