@@ -48,7 +48,7 @@ class UserController extends Controller
             $request->validated();
             //create a link to varify email.      
             $verification_token = $this->createToken($request->email);
-            $url = "http://127.0.0.1:8000/api/emailVerify/" . $verification_token . '/' . $request->email;
+            $url = "https://imagesharelink.herokuapp.com/api/emailVerify/" . $verification_token . '/' . $request->email;
 
             if ($image = $request->file('profile_pic')) {
                 //make a path to store image
