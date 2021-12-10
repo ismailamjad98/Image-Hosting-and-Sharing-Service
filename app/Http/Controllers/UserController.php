@@ -66,7 +66,7 @@ class UserController extends Controller
                 'email' => $request->email,
                 'age' => $request->age,
                 'verification_token' => $url,
-                'profile_pic' => $request->profile_pic,
+                // 'profile_pic' => $request->profile_pic,
                 'password' => Hash::make($request->password),
             ]);
 
