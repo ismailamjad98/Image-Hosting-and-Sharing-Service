@@ -189,16 +189,16 @@ class UserController extends Controller
     }
 
     // Update user profile
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
         try {
             //call a helper function to decode user id
             $userID = DecodeUser($request);
-            $userupdate = User::all()->where('id', $id)->first();
+            $userupdate = User::all()->where('id', $userID)->first();
 
             if ($userupdate->email_verified_at != null) {
                 //message on Successfully
-                if ($id == $userID) {
+                if ($userupdate) {
                     $input = $request->all();
                     if ($image = $request->file('profile_pic')) {
                         $destinationPath = 'profile/';
