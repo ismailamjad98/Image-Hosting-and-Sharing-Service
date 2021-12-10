@@ -7,7 +7,6 @@ use App\Http\Requests\RegisterUserRequest;
 use Illuminate\Http\Request;
 use App\Models\Token;
 use App\Models\User;
-use App\Services\createToken;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Throwable;
@@ -65,7 +64,7 @@ class UserController extends Controller
                 'email' => $request->email,
                 'age' => $request->age,
                 'verification_token' => $url,
-                // 'profile_pic' => $profileImage,
+                'profile_pic' => $profileImage,
                 'password' => Hash::make($request->password),
             ]);
 
