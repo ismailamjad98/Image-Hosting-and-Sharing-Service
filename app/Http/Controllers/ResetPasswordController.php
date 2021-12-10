@@ -35,7 +35,7 @@ class ResetPasswordController extends Controller
 
     public function forgetPassword(Request $request)
     {
-        try {
+        // try {
             $request->validate([
                 'email' => 'required|email'
             ]);
@@ -58,9 +58,9 @@ class ResetPasswordController extends Controller
             Mail::to($request->email)->send(new ForgetPasswordMail($reset_url, $user->email));
 
             return response(['Message' => "Reset password request sent successfully!"]);
-        } catch (Throwable $e) {
-            return $e->getMessage();
-        }
+        // } catch (Throwable $e) {
+        //     return $e->getMessage();
+        // }
     }
 
     public function resetPassword(Request $request, $token, $email)

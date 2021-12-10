@@ -88,7 +88,7 @@ class UserController extends Controller
     //create function to verify the email
     function EmailVerify($token, $email)
     {
-        try {
+        // try {
             $emailVerify = User::where('email', $email)->first();
 
             if ($emailVerify->email_verified_at != null) {
@@ -106,9 +106,9 @@ class UserController extends Controller
                     'message' => 'Something Went Wrong'
                 ]);
             }
-        } catch (Throwable $e) {
-            return $e->getMessage();
-        }
+        // } catch (Throwable $e) {
+        //     return $e->getMessage();
+        // }
     }
 
 
