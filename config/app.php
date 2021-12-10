@@ -167,7 +167,6 @@ return [
          * Package Service Providers...
          */
         Jorenvh\Share\Providers\ShareServiceProvider::class,
-        \Fruitcake\Cors\CorsServiceProvider::class,
 
         /*
          * Application Service Providers...

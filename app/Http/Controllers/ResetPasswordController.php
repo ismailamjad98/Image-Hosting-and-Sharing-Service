@@ -18,7 +18,7 @@ class ResetPasswordController extends Controller
     //creating a token 
     function createToken($data)
     {
-        // $key = "SocialCamp";
+        $key = "SocialCamp";
         $payload = array(
             "iss" => "http://127.0.0.1:8000",
             "aud" => "http://127.0.0.1:8000/api",
@@ -28,7 +28,7 @@ class ResetPasswordController extends Controller
             'token_type' => 'bearer'
         );
 
-        $token = JWT::encode($payload, 'SocialCamp', 'HS256');
+        $token = JWT::encode($payload, $key, 'HS256');
 
         return $token;
     }
@@ -39,8 +39,8 @@ class ResetPasswordController extends Controller
             $request->validate([
                 'email' => 'required|email'
             ]);
-            $forgetpass_token = $this->createToken($request->email);
-            $reset_url = 'https://imagesharelink.herokuapp.com/api/reset_password/' . $forgetpass_token . '/' . $request->email;
+            $forgetpass_token = (new createToken)->createToken($request->email);
+            $reset_url = 'http://127.0.0.1:8000/api/reset_password/' . $forgetpass_token . '/' . $request->email;
 
             $user = User::where('email', $request->email)->first();
 
@@ -71,17 +71,18 @@ class ResetPasswordController extends Controller
             ]);
 
             $getuser = PasswordReset::where('token', $token)->where('email', $email)->where('expire' , '1')->first();
-            
+            // dd($getuser);
             if($getuser == null){
                 return response(['Message' => "The token is expire please Try again"]);
             }
 
             if ($getuser) {
-                User::where('email', $email)->update([
-                    'password' => Hash::make($request->password),
-                ]);
                 PasswordReset::where('email', $email)->where('token', $token)->update([
                     'expire' => 0,
+                ]);
+
+                User::where('email', $email)->update([
+                    'password' => Hash::make($request->password),
                 ]);
                 return response(['Message' => "Password changed successfully!"]);
             }

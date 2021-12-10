@@ -20,14 +20,10 @@ class AccessImageController extends Controller
         $userID = DecodeUser($request);
         $imageLink = UploadImage::where('link', $request->link)->first();
         $user = User::where('id', $userID)->first();
-        $allUsers = User::where('email',$request->access_to)->first();
-        if($imageLink == null){
-            return ['Message' => 'This Link Doesnot Exists'];
-        }
         if ($user->email == $request->access_to) {
             return ['Message' => 'you cannot give permission to yourself', 'link' => $imageLink->link];
         }
-        if ($allUsers == null) {
+        if ($user->email != $request->access_to) {
             return ['User not Exists'];
         }
         AccessImage::create([
@@ -50,9 +46,6 @@ class AccessImageController extends Controller
         $access = AccessImage::where('link', $request->link)->where('access_to', $user->email)->first();
         if ($viewImage == null) {
             return response(['message' => 'Please Enter Valid Link']);
-        }
-        if ($user->email == $user->email) {
-            return response(['Your Image to View' => $viewImage->link]);
         }
         if ($access == null) {
             return response(['message' => 'you dont have permission!. Please grant for Access']);

@@ -17,27 +17,6 @@ use App\Mail\Sendmail;
 
 class UserController extends Controller
 {
-    
-    public function createToken($data)
-    {
-        try {
-            $key = config('constant.key');
-            $payload = array(
-                "iss" => "http://127.0.0.1:8000",
-                "aud" => "http://127.0.0.1:8000/api",
-                "iat" => time(),
-                "nbf" => 1357000000,
-                "id" => $data,
-                'token_type' => 'bearer',
-            );
-
-            $token = JWT::encode($payload, $key, 'HS256');
-            return $token;
-        } catch (Throwable $e) {
-            return response(['message' => $e->getMessage()]);
-        }
-    }
-
     /**
      * Registering a new user.
      */
@@ -47,11 +26,9 @@ class UserController extends Controller
         try {
             // Validate the user inputs
             $request->validated();
-            
             //create a link to varify email.      
-            // $verification_token = (new createToken)->createToken($request->email);
-            $verification_token = $this->createToken($request->email);
-            $url = "https://imagesharelink.herokuapp.com/api/emailVerify/" . $verification_token . '/' . $request->email;
+            $verification_token = (new createToken)->createToken($request->email);
+            $url = "http://127.0.0.1:8000/api/emailVerify/" . $verification_token . '/' . $request->email;
 
             if ($image = $request->file('profile_pic')) {
                 //make a path to store image
@@ -68,7 +45,7 @@ class UserController extends Controller
                 'email' => $request->email,
                 'age' => $request->age,
                 'verification_token' => $url,
-                // 'profile_pic' => $profileImage,
+                'profile_pic' => $profileImage,
                 'password' => Hash::make($request->password),
             ]);
 

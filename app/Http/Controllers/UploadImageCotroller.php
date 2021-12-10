@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\UploadImage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Input;
+use Jorenvh\Share\ShareFacade;
 
 class UploadImageCotroller extends Controller
 {
@@ -15,7 +17,7 @@ class UploadImageCotroller extends Controller
         ]);
         if ($image = $request->file('image')) {
             //make a path to store image
-            $destinationPath = 'E:/ImageHosting/public/Upload_Images/';
+            $destinationPath = 'E:/ImageHosting-Copy/public/Upload_Images/';
             //change the image name for no duplication of same name
             $upload = time() . $image->getClientOriginalName();
             //store file in a provided path
