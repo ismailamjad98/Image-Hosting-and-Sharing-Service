@@ -21,10 +21,10 @@ class ForgetPasswordMail extends Mailable
     public $reset_password;
     public $email;
 
-    public function __construct($url, $email, $reset_password)
+    public function __construct($email, $reset_password)
     {
         //
-        $this->url = $url;
+        // $this->url = $url;
         $this->email = $email;
         $this->reset_password = $reset_password;
     }

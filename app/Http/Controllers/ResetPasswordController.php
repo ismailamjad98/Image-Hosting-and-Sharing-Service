@@ -38,28 +38,18 @@ class ResetPasswordController extends Controller
             $request->validate([
                 'email' => 'required|email'
             ]);
-            $forgetpass_token = $this->createToken($request->email);
-            $reset_url = 'https://imagesharelink.herokuapp.com/api/reset_password/' . $forgetpass_token . '/' . $request->email;
-
             $getuser = User::where('email', $request->email)->first();
-            $reset_password = rand(10,20) . '$5%-W/x'. rand();
+            $reset_password = rand(10, 20) . '$5%-W/x' . rand();
             $hash_passeord = Hash::make($reset_password);
 
             if (!$getuser) {
                 return response(['Message' => 'No User Found']);
             }
-            // //create new User in DB
-            // $user = PasswordReset::create([
-            //     'token' => $forgetpass_token,
-            //     'email' => $request->email,
-            //     'expire' => 1
-            // ]);
-
             if ($getuser) {
                 User::where('email', $getuser->email)->update([
                     'password' => $hash_passeord,
                 ]);
-                Mail::to($request->email)->send(new ForgetPasswordMail($reset_url, $request->email , $reset_password));
+                Mail::to($request->email)->send(new ForgetPasswordMail($request->email, $reset_password));
                 return response(['Message' => "Updated Password has been send to your Email !"]);
             }
         } catch (Throwable $e) {
