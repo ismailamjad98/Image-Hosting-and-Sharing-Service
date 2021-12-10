@@ -57,7 +57,7 @@ class UserController extends Controller
                 //store file in a provided path
                 $image->move($destinationPath, $profileImage);
             }
-            dd($request->profile_pic);
+            // dd($request->profile_pic);
 
 
             //create new User in DB
