@@ -14,7 +14,7 @@ return [
     */
 
     // 'default' => env('FILESYSTEM_DRIVER', 'local'),
-    'default' => env('APP_URL'),
+    'default' => env('FILESYSTEM_DRIVER', 'https://imagesharelink.herokuapp.com/storage/'),
 
 
     /*
