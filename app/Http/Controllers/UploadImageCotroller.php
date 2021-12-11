@@ -5,33 +5,79 @@ namespace App\Http\Controllers;
 use App\Models\UploadImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Storage;
 use Jorenvh\Share\ShareFacade;
 
 class UploadImageCotroller extends Controller
 {
+    //Functions to convert base64 back to image
+    public function getBytes($data)
+    {
+        for ($count = 0; $count < strlen($data); $count += 2)
+            $bytes[] = chr(hexdec(substr($data, $count, 2)));
+        return implode($bytes);
+    }
+
+    public function getExtensuon($data)
+    {
+        $extensionArray = array(
+            "jpeg" => "FFD8",
+            "png" => "89504E470D0A1A0A",
+            "gif" => "474946",
+        );
+
+        foreach ($extensionArray as $ext => $hexbytes) {
+            $bytes = $this->getBytes($hexbytes);
+            if (substr($data, 0, strlen($bytes)) == $bytes)
+                return $ext;
+        }
+        return NULL;
+    }
+
     public function uploadImage(Request $request)
     {
         $request->validate([
             'image' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
             'status' => 'required'
         ]);
-        if ($image = $request->file('image')) {
-            //make a path to store image
-            $destinationPath = 'E:/ImageHosting-Copy/public/Upload_Images/';
-            //change the image name for no duplication of same name
-            $upload = time() . $image->getClientOriginalName();
-            //store file in a provided path
-            $image->move($destinationPath, $upload);
+
+        //change image to bse 64
+        $picture = $request->profile_pic;
+        $trimmer = explode(",", $picture);
+
+        foreach ($trimmer as $value) {
+            $imagedata = trim($value);
         }
+        //Get Extension
+        $imgdata = base64_decode($imagedata);
+        $extension = $this->getExtensuon($imgdata);
+        $imagedata = str_replace(' ', '+', $imagedata);
+        $imageName = date('YmdHis') . time() . 'update_picture.' . $extension;
+        $imagePath =  'https://imagesharelink.herokuapp.com/storage/' . $imageName;
+
+        $check =  Storage::disk('public')->put($imageName, base64_decode($imagedata));
+
+
+        // this code was without base64
+
+        // if ($image = $request->file('image')) {
+        //     //make a path to store image
+        //     $destinationPath = 'E:/ImageHosting-Copy/public/Upload_Images/';
+        //     //change the image name for no duplication of same name
+        //     $upload = time() . $image->getClientOriginalName();
+        //     //store file in a provided path
+        //     $image->move($destinationPath, $upload);
+        // }
+
         //call a helper function to decode user id
         $userID = DecodeUser($request);
         //create a shareable link
-        $link = $destinationPath . time() .$image->getClientOriginalName();
+        // $link = $destinationPath . time() . $image->getClientOriginalName();
         //if user is logged in get UserId
         if (isset($userID)) {
             UploadImage::create([
-                'image' => $upload,
-                'link' => $link,
+                'image' => $imageName,
+                'link' => $imagePath,
                 'user_id' => $userID,
                 'status' => $request->status
             ]);
@@ -39,15 +85,15 @@ class UploadImageCotroller extends Controller
         //if user is not logged in
         if (!isset($userID)) {
             UploadImage::create([
-                'image' => $upload,
-                'link' => $link,
+                'image' => $imageName,
+                'link' => $imagePath,
                 'status' => $request->status
             ]);
         }
         //message on Success
         return response([
             'message' => 'Image Upload successfully',
-            'shareable Link' => $link
+            'shareable Link' => $imagePath
         ], 200);
     }
 
@@ -94,11 +140,11 @@ class UploadImageCotroller extends Controller
         }
     }
 
-    public function searchImage(Request $request , $image_name)
+    public function searchImage(Request $request, $image_name)
     {
         $image_name = $request->image;
 
-        $image = UploadImage::where('status','public')->where('image', 'LIKE', '%' . $image_name . '%')->orWhere('link', 'LIKE', '%' . $image_name . '%')->orWhere('created_at', 'LIKE', '%' . $image_name . '%')->orWhere('status', 'LIKE', '%' . $image_name . '%')->get();
+        $image = UploadImage::where('status', 'public')->where('image', 'LIKE', '%' . $image_name . '%')->orWhere('link', 'LIKE', '%' . $image_name . '%')->orWhere('created_at', 'LIKE', '%' . $image_name . '%')->orWhere('status', 'LIKE', '%' . $image_name . '%')->get();
         if (count($image) > 0)
             return response(['Images' => $image], 200);
         else {
@@ -106,5 +152,3 @@ class UploadImageCotroller extends Controller
         }
     }
 }
-
-

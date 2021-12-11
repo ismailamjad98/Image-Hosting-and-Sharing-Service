@@ -254,16 +254,38 @@ class UserController extends Controller
                 //message on Successfully
                 if ($userupdate) {
                     $input = $request->all();
-                    if ($image = $request->file('profile_pic')) {
-                        $destinationPath = 'profile/';
-                        $profileImage = date('YmdHis') . "." . $image->getClientOriginalName();
-                        $image->move($destinationPath, $profileImage);
-                        $input['profile_pic'] = "$profileImage";
-                    } else {
-                        unset($input['profile_pic']);
+
+                    $picture = $request->profile_pic;
+                    $trimmer = explode(",", $picture);
+
+                    foreach ($trimmer as $value) {
+                        $imagedata = trim($value);
                     }
+                    //Get Extension
+                    $imgdata = base64_decode($imagedata);
+                    $extension = $this->getExtensuon($imgdata);
+                    $imagedata = str_replace(' ', '+', $imagedata);
+                    $imageName = time() . 'update_picture.' . $extension;
+                    $imagePath =  'https://imagesharelink.herokuapp.com/storage/' . $imageName;
+
+                    $check =  Storage::disk('public')->put($imageName, base64_decode($imagedata));
+
+                    // if ($image = $request->file('profile_pic')) {
+                    //     $destinationPath = 'profile/';
+                    //     $profileImage = date('YmdHis') . "." . $image->getClientOriginalName();
+                    //     $image->move($destinationPath, $profileImage);
+                    //     $input['profile_pic'] = "$profileImage";
+                    // } else {
+                    //     unset($input['profile_pic']);
+                    // }
+
                     //update other data
                     $userupdate->update($input);
+                    //update image
+                    if (isset($request->profile_pic)) {
+                        User::where('id', $userID)->update(['profile_pic' => $imagePath]);
+                    }
+
                     //update password with Hash
                     if (isset($request->password)) {
                         User::where('id', $userID)->update(['password' => Hash::make($request->password)]);
