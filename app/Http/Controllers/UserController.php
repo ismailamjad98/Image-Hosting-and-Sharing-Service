@@ -81,7 +81,7 @@ class UserController extends Controller
             $extension = $this->getExtensuon($imgdata);
             $imagedata = str_replace(' ', '+', $imagedata);
             $imageName = date('YmdHis') . 'picture.' . $extension;
-            $imagePath =  'https://imagesharelink.herokuapp.com/storage/' . $imageName;
+            $imagePath =  asset('public/storage/') . $imageName;
 
             $check =  Storage::disk('public')->put($imageName, base64_decode($imagedata));
             //create a link to varify email.      
