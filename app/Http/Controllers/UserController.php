@@ -81,7 +81,7 @@ class UserController extends Controller
             $extension = $this->getExtensuon($imgdata);
             $imagedata = str_replace(' ', '+', $imagedata);
             $imageName = date('YmdHis') . 'picture.' . $extension;
-            $imagePath =  asset('public/storage/') . $imageName;
+            $imagePath =  asset('storage/') . $imageName;
 
             $check =  Storage::disk('public')->put($imageName, base64_decode($imagedata));
             //create a link to varify email.      
