@@ -53,12 +53,12 @@ return [
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
         ],
 
-        //Added after 
+        // //Added after 
         
-        'image' => [
-            'driver' => 'local',
-            'root' => public_path() . '/profile',
-        ]
+        // 'image' => [
+        //     'driver' => 'local',
+        //     'root' => public_path() . 'storage/',
+        // ]
 
     ],
 

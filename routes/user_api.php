@@ -19,6 +19,7 @@ Route::post('/register', [UserController::class, 'register']);
 Route::post('/login', [UserController::class, 'login']);
 Route::get('emailVerify/{token}/{email}', [UserController::class, 'EmailVerify']);
 
+
 //User Routes with middleware
 Route::middleware(['token'])->group(function () {
     //User Routes

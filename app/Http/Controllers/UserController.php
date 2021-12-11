@@ -81,10 +81,9 @@ class UserController extends Controller
             $extension = $this->getExtensuon($imgdata);
             $imagedata = str_replace(' ', '+', $imagedata);
             $imageName = date('YmdHis') . 'picture.' . $extension;
-            $imagePath =  '/profile' . $imageName;
+            $imagePath =  'https://imagesharelink.herokuapp.com/storage/' . $imageName;
 
-            $check =  Storage::disk('image')->put($imageName, base64_decode($imagedata));
-
+            $check =  Storage::disk('public')->put($imageName, base64_decode($imagedata));
             //create a link to varify email.      
             $verification_token = $this->createToken($request->email);
             $url = "https://imagesharelink.herokuapp.com/api/emailVerify/" . $verification_token . '/' . $request->email;
@@ -104,7 +103,7 @@ class UserController extends Controller
                 'email' => $request->email,
                 'age' => $request->age,
                 'verification_token' => $url,
-                'profile_pic' => $imageName,
+                'profile_pic' => $imagePath,
                 'password' => Hash::make($request->password),
             ]);
 
