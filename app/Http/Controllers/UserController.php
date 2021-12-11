@@ -42,7 +42,6 @@ class UserController extends Controller
     {
         for ($count = 0; $count < strlen($data); $count += 2)
             $bytes[] = chr(hexdec(substr($data, $count, 2)));
-
         return implode($bytes);
     }
 
@@ -65,7 +64,6 @@ class UserController extends Controller
     /**
      * Registering a new user.
      */
-
     public function register(RegisterUserRequest $request)
     {
         try {
@@ -203,6 +201,23 @@ class UserController extends Controller
             }
         } catch (Throwable $e) {
             return $e->getMessage();
+        }
+    }
+
+    //my profile method
+    public function Profile(Request $request)
+    {
+        //call a helper function to decode user id
+        $userID = DecodeUser($request);
+        $find_user = User::all()->where('id', $userID)->first();
+
+        if (isset($find_user)) {
+            return response([
+                $find_user
+            ]);
+        }
+        if ($find_user == null) {
+            return response(['User is Unauthorize']);
         }
     }
 

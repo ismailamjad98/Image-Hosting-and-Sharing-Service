@@ -22,6 +22,7 @@ Route::get('emailVerify/{token}/{email}', [UserController::class, 'EmailVerify']
 //User Routes with middleware
 Route::middleware(['token'])->group(function () {
     //User Routes
+    Route::post('/profile', [UserController::class, 'Profile']);
     Route::post('/profile/update', [UserController::class, 'update']);
     Route::post('/logout', [UserController::class, 'logout']);
 });
