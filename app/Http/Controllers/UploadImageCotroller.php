@@ -79,6 +79,24 @@ class UploadImageCotroller extends Controller
         ], 200);
     }
 
+    public function updateImageStatus(Request $request, $id)
+    {
+        //call a helper function to decode user id
+        $userID = DecodeUser($request);
+
+        $get_image = UploadImage::where('id', $id)->where('user_id', $userID)->update(['status' => $request->status]);
+        if ($get_image == 0) {
+            return response([
+                'message' => 'UnAuthorize'
+            ]);
+        }
+        if (isset($get_image)) {
+            return response([
+                'message' => 'Status Update Successfully'
+            ], 200);
+        }
+    }
+
     public function deleteImage(Request $request, $id)
     {
         //call a helper function to decode user id

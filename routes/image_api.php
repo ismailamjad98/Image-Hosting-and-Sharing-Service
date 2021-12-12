@@ -25,4 +25,5 @@ Route::post('/search/{image}', [UploadImageCotroller::class, 'searchImage']);
 Route::middleware(['token'])->group(function () {
     Route::post('/image_permission', [AccessImageController::class, 'givePermission']);
     Route::get('/view_image', [AccessImageController::class, 'ViewImage']);
+    Route::post('/update_image_status/{id}', [UploadImageCotroller::class, 'updateImageStatus']);
 });
