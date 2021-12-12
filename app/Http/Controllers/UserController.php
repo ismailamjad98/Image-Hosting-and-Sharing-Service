@@ -253,7 +253,7 @@ class UserController extends Controller
                     $extension = $this->getExtensuon($imgdata);
                     $imagedata = str_replace(' ', '+', $imagedata);
                     $imageName = time() . 'update_picture.' . $extension;
-                    $imagePath =  'https://imagesharelink.herokuapp.com/storage/' . $imageName;
+                    $imagePath =  asset('storage') . '/' . $imageName;
 
                     $check =  Storage::disk('image')->put($imageName, base64_decode($imagedata));
                     //update other data
