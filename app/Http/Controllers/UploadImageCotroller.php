@@ -49,10 +49,9 @@ class UploadImageCotroller extends Controller
         $imgdata = base64_decode($imagedata);
         $extension = $this->getExtensuon($imgdata);
         $imagedata = str_replace(' ', '+', $imagedata);
-        $imageName = date('YmdHis') . time() . 'update_picture.' . $extension;
+        $imageName = date('YmdHis') . 'picture.' . $extension;
         $imagePath =  asset('storage') . '/' . $imageName;
         $check =  Storage::disk('image')->put($imageName, base64_decode($imagedata));
-
         //call a helper function to decode user id
         $userID = DecodeUser($request);
         //if user is logged in get UserId
