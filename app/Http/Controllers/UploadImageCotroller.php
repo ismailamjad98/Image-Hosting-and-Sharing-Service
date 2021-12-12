@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\UploadImage;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -78,13 +79,20 @@ class UploadImageCotroller extends Controller
         ], 200);
     }
 
-    public function deleteImage($id)
+    public function deleteImage(Request $request, $id)
     {
-        if (UploadImage::where('id', '=', $id)->delete($id)) {
-            return response([
-                'Status' => '200',
-                'message' => 'Image Deleted successfully'
-            ], 200);
+        //call a helper function to decode user id
+        $userID = DecodeUser($request);
+
+        $get_user = User::where('id', $userID)->first();
+
+        if (isset($get_user)) {
+            if (UploadImage::where('id', '=', $id)->delete($id)) {
+                return response([
+                    'Status' => '200',
+                    'message' => 'Image Deleted successfully'
+                ], 200);
+            }
         } else {
             return response([
                 'message' => 'Not Found.'
