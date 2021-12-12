@@ -39,7 +39,7 @@ class UploadImageCotroller extends Controller
             'status' => 'required'
         ]);
         //change image to bse 64
-        $picture = $request->profile_pic;
+        $picture = $request->image;
         $trimmer = explode(",", $picture);
 
         foreach ($trimmer as $value) {
