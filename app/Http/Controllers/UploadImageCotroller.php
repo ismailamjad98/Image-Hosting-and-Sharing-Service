@@ -104,6 +104,12 @@ class UploadImageCotroller extends Controller
 
         $get_user = User::where('id', $userID)->first();
 
+        if ($get_user == 0) {
+            return response([
+                'message' => 'UnAuthorize'
+            ]);
+        }
+
         if (isset($get_user)) {
             if (UploadImage::where('id', '=', $id)->delete($id)) {
                 return response([
