@@ -35,7 +35,7 @@ class UploadImageCotroller extends Controller
     public function uploadImage(Request $request)
     {
         $request->validate([
-            'image' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
+            'image' => 'required',
             'status' => 'required'
         ]);
         //change image to bse 64
