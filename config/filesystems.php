@@ -75,12 +75,8 @@ return [
     |
     */
 
-    // 'links' => [
-    //     public_path('storage') => storage_path('app/public'),
-    // ],
-
     'links' => [
-        base_path('https://imagesharelink.herokuapp.com/storage') => storage_path('app/public'),
+        public_path('storage') => storage_path('app/public'),
     ],
 
 ];
