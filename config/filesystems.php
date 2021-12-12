@@ -57,10 +57,10 @@ return [
 
         // //Added after 
         
-        // 'image' => [
-        //     'driver' => 'local',
-        //     'root' => public_path() . 'storage/',
-        // ]
+        'image' => [
+            'driver' => 'local',
+            'root'   => public_path() . '/storage',
+        ],
 
     ],
 
