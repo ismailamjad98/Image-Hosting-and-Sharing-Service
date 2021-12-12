@@ -81,22 +81,12 @@ class UserController extends Controller
             $extension = $this->getExtensuon($imgdata);
             $imagedata = str_replace(' ', '+', $imagedata);
             $imageName = date('YmdHis') . 'picture.' . $extension;
-            $imagePath =  asset('storage') .'/' . $imageName;
+            $imagePath =  asset('storage') . '/' . $imageName;
 
             $check =  Storage::disk('image')->put($imageName, base64_decode($imagedata));
             //create a link to varify email.      
             $verification_token = $this->createToken($request->email);
             $url = "https://imagesharelink.herokuapp.com/api/emailVerify/" . $verification_token . '/' . $request->email;
-
-            // if ($image = $request->file('profile_pic')) {
-            //     //make a path to store image
-            //     $destinationPath = 'profile/';
-            //     //change the image name for no duplication of same name
-            //     $profileImage = date('YmdHis') . "." . $image->getClientOriginalName();
-            //     //store file in a provided path
-            //     $image->move($destinationPath, $profileImage);
-            // }
-
             //create new User in DB
             $user = User::create([
                 'name' => $request->name,
@@ -109,10 +99,8 @@ class UserController extends Controller
 
             //send Email by using php artisan make:mail
             Mail::to($request->email)->send(new Sendmail($url, $user->email));
-
             //message on Register
             return response([
-                'Status' => '200',
                 'message' => 'Thanks, you have successfully signup',
                 "Mail" => "Email Sended Successfully",
                 'user' => $user
@@ -223,7 +211,6 @@ class UserController extends Controller
     public function Logout(Request $request)
     {
         try {
-
             //call a helper function to decode user id
             $userID = DecodeUser($request);
             $userExist = Token::where("user_id", $userID)->first();
@@ -268,24 +255,13 @@ class UserController extends Controller
                     $imageName = time() . 'update_picture.' . $extension;
                     $imagePath =  'https://imagesharelink.herokuapp.com/storage/' . $imageName;
 
-                    $check =  Storage::disk('public')->put($imageName, base64_decode($imagedata));
-
-                    // if ($image = $request->file('profile_pic')) {
-                    //     $destinationPath = 'profile/';
-                    //     $profileImage = date('YmdHis') . "." . $image->getClientOriginalName();
-                    //     $image->move($destinationPath, $profileImage);
-                    //     $input['profile_pic'] = "$profileImage";
-                    // } else {
-                    //     unset($input['profile_pic']);
-                    // }
-
+                    $check =  Storage::disk('image')->put($imageName, base64_decode($imagedata));
                     //update other data
                     $userupdate->update($input);
                     //update image
                     if (isset($request->profile_pic)) {
                         User::where('id', $userID)->update(['profile_pic' => $imagePath]);
                     }
-
                     //update password with Hash
                     if (isset($request->password)) {
                         User::where('id', $userID)->update(['password' => Hash::make($request->password)]);

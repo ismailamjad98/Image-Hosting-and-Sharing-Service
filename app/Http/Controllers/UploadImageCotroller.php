@@ -4,9 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\UploadImage;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Storage;
-use Jorenvh\Share\ShareFacade;
 
 class UploadImageCotroller extends Controller
 {
@@ -40,7 +38,6 @@ class UploadImageCotroller extends Controller
             'image' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
             'status' => 'required'
         ]);
-
         //change image to bse 64
         $picture = $request->profile_pic;
         $trimmer = explode(",", $picture);
@@ -54,25 +51,10 @@ class UploadImageCotroller extends Controller
         $imagedata = str_replace(' ', '+', $imagedata);
         $imageName = date('YmdHis') . time() . 'update_picture.' . $extension;
         $imagePath =  'https://imagesharelink.herokuapp.com/storage/' . $imageName;
-
         $check =  Storage::disk('image')->put($imageName, base64_decode($imagedata));
-
-
-        // this code was without base64
-
-        // if ($image = $request->file('image')) {
-        //     //make a path to store image
-        //     $destinationPath = 'E:/ImageHosting-Copy/public/Upload_Images/';
-        //     //change the image name for no duplication of same name
-        //     $upload = time() . $image->getClientOriginalName();
-        //     //store file in a provided path
-        //     $image->move($destinationPath, $upload);
-        // }
 
         //call a helper function to decode user id
         $userID = DecodeUser($request);
-        //create a shareable link
-        // $link = $destinationPath . time() . $image->getClientOriginalName();
         //if user is logged in get UserId
         if (isset($userID)) {
             UploadImage::create([
@@ -110,20 +92,6 @@ class UploadImageCotroller extends Controller
             ], 200);
         }
     }
-
-    // public function renameImage(Request $request, $id)
-    // {
-    //     $rename = UploadImage::all()->where('id', $id)->first();
-    //     if (isset($rename)) {
-    //         UploadImage::where('id', $id)->update(['image' => $request->image]);
-    //         return response(['message' => 'Renamed Successfully'], 200);
-    //     }
-    //     if (!isset($rename)) {
-    //         return response([
-    //             'message' => 'No File Exists'
-    //         ], 200);
-    //     }
-    // }
 
     public function myImages(Request $request)
     {

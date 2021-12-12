@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 class AccessImageController extends Controller
 {
-    //
+    //function to give permission of share link with your friends
     public function givePermission(Request $request)
     {
         $request->validate([
@@ -34,6 +34,7 @@ class AccessImageController extends Controller
         return response(['message' => 'Permission has been granted'], 200);
     }
 
+    //functtion to view image who get permission of sharelink
     public function ViewImage(Request $request)
     {
         //call a helper function to decode user id

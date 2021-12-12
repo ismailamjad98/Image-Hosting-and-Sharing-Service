@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Hash;
 use Throwable;
 
 use Firebase\JWT\JWT;
-use App\Models\PasswordReset;
 use Illuminate\Support\Facades\Mail;
 
 class ResetPasswordController extends Controller
