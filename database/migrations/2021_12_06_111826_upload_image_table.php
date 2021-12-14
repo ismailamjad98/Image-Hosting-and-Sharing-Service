@@ -15,10 +15,10 @@ class UploadImageTable extends Migration
     {
         Schema::create('upload_images', function (Blueprint $table) {
             $table->id();
-            $table->text('image')->nullable();
-            $table->text('link')->nullable();
+            $table->text('image');
+            $table->text('link');
             $table->integer('user_id')->nullable();
-            $table->string('status')->nullable();
+            $table->string('status')->default('hidden');
             $table->timestamps();
         });
     }
